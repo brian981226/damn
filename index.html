@@ -76,6 +76,11 @@
         
         .btn-danger { background-color: transparent !important; color: #ff003c !important; border: 1px solid #ff003c !important; box-shadow: inset 0 0 5px rgba(255,0,60,0.2) !important; }
         .btn-danger:hover { background-color: #ff003c !important; color: #000 !important; box-shadow: 0 0 15px rgba(255,0,60,0.6) !important; }
+        
+        /* 專為「覆寫名稱」設計的紫色按鈕 */
+        .btn-purple { background-color: transparent !important; color: #b829d9 !important; border: 1px solid #b829d9 !important; box-shadow: inset 0 0 5px rgba(184,41,217,0.2) !important; }
+        .btn-purple:hover { background-color: #b829d9 !important; color: #fff !important; box-shadow: 0 0 15px rgba(184,41,217,0.6) !important; }
+
         .btn-small { padding: 5px 10px; font-size: 0.85em; margin-left: 8px; font-weight: bold; }
         
         /* 表格 (戰力排行) */
@@ -199,6 +204,15 @@
                 <div class="history-box" id="historyBox"></div>
             </div>
 
+            <div class="card" style="border-top-color: #b829d9;">
+                <h2 style="border-left-color: #b829d9; color: #b829d9;">覆寫個體名稱 <span style="font-size: 0.6em; color: #666;">(Admin Only)</span></h2>
+                <div class="input-group">
+                    <input type="number" id="renameId" placeholder="輸入要覆寫的編號">
+                    <input type="text" id="renameName" placeholder="輸入新的名稱">
+                    <button class="action-btn btn-purple" onclick="renameUser()">覆寫 (需授權碼)</button>
+                </div>
+            </div>
+
             <div class="card" style="border-top-color: #ff003c;">
                 <h2 style="border-left-color: #ff003c;">刪除個體 <span style="font-size: 0.6em; color: #666;">(Admin Only)</span></h2>
                 <div class="input-group">
@@ -230,7 +244,6 @@
             ripple.style.left = e.clientX + 'px';
             ripple.style.top = e.clientY + 'px';
             document.body.appendChild(ripple);
-            // 播完動畫後移除元素
             setTimeout(() => ripple.remove(), 500);
         });
 
@@ -277,7 +290,7 @@
             apiKey: "AIzaSyDNKre0ThjBoGVQPzzPNHelU9t_h469Ef8",
             authDomain: "scoreboard-18161.firebaseapp.com",
             projectId: "scoreboard-18161",
-	    databaseURL: "https://scoreboard-18161-default-rtdb.firebaseio.com/",
+            databaseURL: "https://scoreboard-18161-default-rtdb.firebaseio.com/",
             storageBucket: "scoreboard-18161.firebasestorage.app",
             messagingSenderId: "463769743895",
             appId: "1:463769743895:web:945f76b1a69f5d54032252",
@@ -363,6 +376,35 @@
                     honors = honors.filter(h => h.id !== logId);
                     updateDatabase();
                 }
+            }
+        }
+
+        // 🔥 新增的：覆寫名稱功能
+        function renameUser() {
+            const id = document.getElementById('renameId').value;
+            const newName = document.getElementById('renameName').value.trim();
+
+            if (!id || !newName) { alert("請完整輸入編號與新名稱！"); return; }
+            if (!users[id]) { alert(`找不到編號 ${id} 的資料！`); return; }
+
+            if (verifyAdmin()) {
+                const oldName = users[id].name;
+                users[id].name = newName;
+                
+                // 為了同步榮譽榜上的名稱，順便更新一下
+                honors.forEach(h => { if(h.userId === id) h.userName = newName; });
+
+                const timeString = new Date().toLocaleString();
+                logs.unshift({ 
+                    id: Date.now().toString(), targetId: 'system', points: 0, 
+                    text: `[${timeString}] 🔄 系統裁決：編號 ${id} 的名稱已由 [${oldName}] 覆寫為 [${newName}]。`, 
+                    isValid: true 
+                });
+
+                document.getElementById('renameId').value = ''; 
+                document.getElementById('renameName').value = ''; 
+                updateDatabase(); 
+                alert(`✅ 覆寫成功：編號 ${id} 現在稱為 ${newName}。`);
             }
         }
 
