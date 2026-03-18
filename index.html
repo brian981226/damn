@@ -5,125 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>103</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* ====== 全域深色科技風格 ====== */
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: #08080c; color: #e0e0e0; margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; }
+        /* ====== 全域深色科技風格 & 準星游標 ====== */
+        body { 
+            font-family: 'Noto Sans TC', sans-serif; background-color: #08080c; color: #e0e0e0; 
+            margin: 0; padding: 0; min-height: 100vh; overflow-x: hidden; 
+            cursor: crosshair; 
+            animation: systemBoot 1.2s cubic-bezier(0.8, 0, 0.2, 1) forwards; 
+        }
         
-        /* 動態背景畫布設定 */
+        @keyframes systemBoot {
+            0% { filter: brightness(0) contrast(2) hue-rotate(90deg); opacity: 0; }
+            10% { filter: brightness(1.5) contrast(1.5); opacity: 1; }
+            20% { filter: brightness(0.2) contrast(2); opacity: 0.8; }
+            30% { filter: brightness(1.2) contrast(1.2); opacity: 1; }
+            40% { filter: brightness(0.5); opacity: 0.9; }
+            100% { filter: brightness(1) contrast(1) hue-rotate(0deg); opacity: 1; }
+        }
+
         #matrixCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -3; opacity: 0.4; pointer-events: none; }
         
-        /* 🌟 特效 1: CRT 全螢幕掃描線 */
         .crt-overlay {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
             background-size: 100% 4px; z-index: 999; pointer-events: none; opacity: 0.5;
         }
 
-        /* 背景裝飾標籤 */
         .bg-label { position: fixed; color: rgba(0, 243, 255, 0.4); font-family: monospace; font-size: 0.8em; z-index: -2; pointer-events: none; text-shadow: 0 0 5px rgba(0, 243, 255, 0.2); }
         .label-1 { top: 20%; left: 5%; animation: pulse 2s infinite; }
         .label-2 { bottom: 15%; right: 5%; animation: pulse 3s infinite alternate; }
         .label-3 { top: 50%; right: 2%; writing-mode: vertical-rl; letter-spacing: 5px; opacity: 0.2; }
         @keyframes pulse { 0% { opacity: 0.3; } 50% { opacity: 0.8; } 100% { opacity: 0.3; } }
 
-        /* 主體內容容器 */
         .container { max-width: 900px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
 
-        /* 🌟 特效 2: 標題霓虹故障閃爍 */
         .title-glitch { 
             color: #00f3ff; font-weight: 900; letter-spacing: 4px; text-align: center; 
             margin-bottom: 25px; text-transform: uppercase; margin-top: 30px; 
-            animation: neonFlicker 3s infinite alternate;
+            animation: neonFlicker 3s infinite alternate; cursor: pointer;
         }
         @keyframes neonFlicker {
             0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { text-shadow: 0 0 8px rgba(0,243,255,0.8), 0 0 15px rgba(0,243,255,0.4); opacity: 1; }
             20%, 24%, 55% { text-shadow: none; opacity: 0.4; }
         }
 
-        h2 { color: #e0e0e0; font-weight: 700; letter-spacing: 1px; border-left: 4px solid #00f3ff; padding-left: 10px; margin-top: 0; text-shadow: 0 0 5px rgba(255,255,255,0.2); }
+        h2 { color: #e0e0e0; font-weight: 700; letter-spacing: 1px; border-left: 4px solid #00f3ff; padding-left: 10px; margin-top: 0; text-shadow: 0 0 5px rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: space-between;}
         
-        /* 導覽列 */
         .nav-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; background: rgba(10,10,15,0.85); padding: 8px; border-radius: 6px; border: 1px solid #1f1f2e; box-shadow: 0 4px 15px rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
         .nav-bar button { flex: 1; padding: 12px; font-size: 1em; font-weight: bold; background: transparent; color: #666; border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: 0.3s; white-space: nowrap; position: relative; }
         .nav-bar button:hover { color: #00f3ff; text-shadow: 0 0 8px rgba(0,243,255,0.6); }
         .nav-bar button.active { color: #ff007f; border-bottom: 2px solid #ff007f; background: linear-gradient(0deg, rgba(255,0,127,0.1) 0%, transparent 100%); text-shadow: 0 0 10px rgba(255,0,127,0.8); }
         
-        /* 🌟 特效 4: 導覽列 Hover 鎖定括號 */
         .nav-bar button::before { content: '['; position: absolute; left: 10px; opacity: 0; transition: 0.3s; color: #00f3ff; font-weight: 900; }
         .nav-bar button::after { content: ']'; position: absolute; right: 10px; opacity: 0; transition: 0.3s; color: #00f3ff; font-weight: 900; }
         .nav-bar button:hover::before { opacity: 1; left: 20px; }
         .nav-bar button:hover::after { opacity: 1; right: 20px; }
         .nav-bar button.active::before, .nav-bar button.active::after { display: none; }
 
-        /* 區塊樣式 */
         .section { display: none; animation: cyberpunkFadeIn 0.4s cubic-bezier(0.1, 0.8, 0.2, 1); }
         .section.active { display: block; }
         @keyframes cyberpunkFadeIn { from { opacity: 0; transform: translateY(10px); filter: brightness(1.5); } to { opacity: 1; transform: translateY(0); filter: brightness(1); } }
         
-        /* 卡片面板 (加上毛玻璃效果) */
         .card { background: rgba(12, 12, 18, 0.75); backdrop-filter: blur(8px); padding: 25px; border-radius: 4px; border: 1px solid #2a2a3c; border-top: 2px solid #00f3ff; box-shadow: 0 8px 32px rgba(0,0,0,0.6); margin-bottom: 25px; position: relative; overflow: hidden; }
         .card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, #fff, transparent); animation: scanline 3s linear infinite; }
         @keyframes scanline { 0% { left: -100%; } 100% { left: 200%; } }
 
-        /* 輸入與按鈕 */
         .input-group { margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-        input[type="number"], input[type="text"] { padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #00f3ff; border-radius: 4px; flex-grow: 1; min-width: 120px; font-size: 1em; font-weight: bold; transition: 0.3s; }
-        input:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0,243,255,0.3); outline: none; }
-        input::placeholder { color: #555; font-weight: normal; }
+        input[type="number"], input[type="text"], textarea { padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #00f3ff; border-radius: 4px; flex-grow: 1; min-width: 120px; font-size: 1em; font-weight: bold; transition: 0.3s; cursor: text; }
+        input:focus, textarea:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0,243,255,0.3); outline: none; }
+        input::placeholder, textarea::placeholder { color: #555; font-weight: normal; }
 
         button.action-btn { padding: 12px 25px; font-size: 1em; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; background-color: #00f3ff; color: #000; box-shadow: 0 0 10px rgba(0,243,255,0.4); transition: 0.2s; white-space: nowrap; text-transform: uppercase; }
-        button.action-btn:hover { background-color: #fff; box-shadow: 0 0 20px rgba(0,243,255,0.8); transform: translateY(-2px); }
+        button.action-btn:hover { background-color: #fff; box-shadow: 0 0 20px rgba(0,243,255,0.8); animation: btnGlitch 0.2s infinite; }
+        @keyframes btnGlitch { 0% { transform: translate(0) } 20% { transform: translate(-1px, 1px) } 40% { transform: translate(-1px, -1px) } 60% { transform: translate(1px, 1px) } 80% { transform: translate(1px, -1px) } 100% { transform: translate(0) } }
         
         .btn-danger { background-color: transparent !important; color: #ff003c !important; border: 1px solid #ff003c !important; box-shadow: inset 0 0 5px rgba(255,0,60,0.2) !important; }
         .btn-danger:hover { background-color: #ff003c !important; color: #000 !important; box-shadow: 0 0 15px rgba(255,0,60,0.6) !important; }
         
-        /* 專為「覆寫名稱」設計的紫色按鈕 */
         .btn-purple { background-color: transparent !important; color: #b829d9 !important; border: 1px solid #b829d9 !important; box-shadow: inset 0 0 5px rgba(184,41,217,0.2) !important; }
         .btn-purple:hover { background-color: #b829d9 !important; color: #fff !important; box-shadow: 0 0 15px rgba(184,41,217,0.6) !important; }
 
         .btn-small { padding: 5px 10px; font-size: 0.85em; margin-left: 8px; font-weight: bold; }
         
-        /* 表格 (戰力排行) */
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .sort-controls { display: flex; gap: 5px; font-size: 0.8em; }
+        .sort-controls button { background: transparent; color: #666; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .sort-controls button.active { color: #00f3ff; border-color: #00f3ff; box-shadow: inset 0 0 5px rgba(0,243,255,0.3); }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; cursor: default; }
         th, td { padding: 15px; text-align: left; border-bottom: 1px solid #1f1f2e; }
         th { background: rgba(0, 243, 255, 0.05); color: #00f3ff; font-weight: 900; letter-spacing: 1px; border-bottom: 2px solid #00f3ff; }
         td strong { color: #00f3ff; font-size: 1.1em; text-shadow: 0 0 5px rgba(0,243,255,0.3); }
+        .stat-zimo { color: #2ecc71; font-weight: bold; }
+        .stat-fang { color: #e74c3c; font-weight: bold; }
         
-        /* 🌟 特效 5: 排行榜行 Hover 感應發光 */
         tbody tr { transition: all 0.2s ease; border-left: 0px solid transparent; }
-        tbody tr:hover { background: rgba(0, 243, 255, 0.08); transform: scale(1.01); text-shadow: 0 0 8px rgba(0,243,255,0.5); border-left: 4px solid #00f3ff; }
+        tbody tr:hover { background: rgba(0, 243, 255, 0.08); transform: scale(1.01) translateX(5px); text-shadow: 0 0 8px rgba(0,243,255,0.5); border-left: 4px solid #00f3ff; }
 
-        /* 歷史紀錄 */
         .history-box { max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.5); padding: 15px; border-radius: 4px; font-size: 0.95em; border: 1px solid #1f1f2e; }
         .log-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #2a2a3c; padding-bottom: 10px; color: #aaa; transition: 0.2s; }
         .log-item:hover { color: #fff; padding-left: 5px; }
         .invalid-log { text-decoration: line-through; color: #ff003c; opacity: 0.6; }
         
-        /* 榮譽榜 */
-        .honor-board { padding: 0; }
+        .honor-board { padding: 0; margin-top: 15px; }
         .honor-item { background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%); border-left: 4px solid #ffd700; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 4px 4px 0; transition: 0.3s; }
-        .honor-item:hover { background: linear-gradient(90deg, rgba(255,215,0,0.2) 0%, transparent 100%); transform: translateX(5px); box-shadow: -5px 0 15px rgba(255,215,0,0.2); }
+        .honor-item:hover { background: linear-gradient(90deg, rgba(255,215,0,0.2) 0%, transparent 100%); transform: translateX(10px); box-shadow: -5px 0 15px rgba(255,215,0,0.2); }
         .honor-text { font-size: 1.2em; color: #ffd700; font-weight: 900; text-shadow: 0 0 8px rgba(255,215,0,0.5); }
         .honor-user { color: #fff; font-size: 0.9em; font-weight: normal; margin-left: 10px; text-shadow: none; }
         
-        .special-event-box { background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3); border-left: 4px solid #ffd700; padding: 15px; border-radius: 4px; display: flex; gap: 15px; align-items: center; width: 100%; margin-top: 15px; transition: 0.3s; }
-        .special-event-box label { font-weight: bold; color: #ffd700; cursor: pointer; text-shadow: 0 0 5px rgba(255,215,0,0.4); }
-        .special-event-box input[type="text"] { border-color: #ffd700; color: #ffd700; }
+        .special-event-box { background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.3); border-left: 4px solid #ffd700; padding: 15px; border-radius: 4px; display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 15px; transition: 0.3s; box-sizing: border-box;}
+        .mahjong-options { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .mahjong-options label { font-weight: bold; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .mahjong-options input[type="checkbox"] { width: 18px; height: 18px; accent-color: #00f3ff; cursor: pointer;}
+        .special-event-box input[type="text"] { border-color: #ffd700; color: #ffd700; width: 100%; box-sizing: border-box;}
 
-        /* 結算明細展開區塊 */
         .archive-content { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; animation: cyberpunkFadeIn 0.3s ease-out; }
         .archive-content h4 { color: #00f3ff; margin-top: 0; margin-bottom: 10px; font-size: 1.1em; text-shadow: 0 0 5px rgba(0,243,255,0.4); }
+        .chart-container { width: 100%; max-width: 700px; margin: 20px auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; border: 1px solid #2a2a3c; }
         
-        /* 🌟 特效 3: 點擊雷達波紋 */
         .click-ripple {
             position: fixed; border-radius: 50%; border: 2px solid #00f3ff;
             transform: translate(-50%, -50%); animation: rippleAnim 0.5s ease-out forwards;
             pointer-events: none; z-index: 9999; box-shadow: 0 0 10px #00f3ff, inset 0 0 10px #00f3ff;
         }
-        @keyframes rippleAnim {
-            0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 80px; height: 80px; opacity: 0; border-width: 0px; }
+        @keyframes rippleAnim { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 80px; height: 80px; opacity: 0; border-width: 0px; } }
+
+        .mouse-trail {
+            position: fixed; width: 6px; height: 6px; background: #00f3ff; border-radius: 50%;
+            pointer-events: none; z-index: 9998; transform: translate(-50%, -50%);
+            animation: trailAnim 0.4s linear forwards; box-shadow: 0 0 8px #00f3ff;
         }
+        @keyframes trailAnim { 0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); } }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -136,53 +148,101 @@
     <div class="crt-overlay"></div>
 
     <canvas id="matrixCanvas"></canvas>
-    <div class="bg-label label-1">[SYS.LOG] ACCESS_LEVEL_9_GRANTED</div>
-    <div class="bg-label label-2">DATA_STREAM_ALPHA //: ACTIVE</div>
-    <div class="bg-label label-3">NEURAL_LINK_ESTABLISHED</div>
+    <div class="bg-label label-1">[SYS.LOG] MAHJONG_PROTOCOL_INIT</div>
+    <div class="bg-label label-2">ZIMO_STREAM_ALPHA //: ACTIVE</div>
+    <div class="bg-label label-3">TILE_LINK_ESTABLISHED</div>
 
     <div class="container">
-        <h1 class="title-glitch">◆ 103_SCOREBOARD ◆</h1>
+        <h1 class="title-glitch">◆ 103_記分板 ◆</h1>
 
         <div class="nav-bar">
             <button id="btn-tab-main" class="active" onclick="switchTab('tab-main', this)">📊 點數排行</button>
-            <button id="btn-tab-action" onclick="switchTab('tab-action', this)">⚔️ 加減分設置</button>
+            <button id="btn-tab-action" onclick="switchTab('tab-action', this)">🀄 加減分設置</button>
             <button id="btn-tab-honor" onclick="switchTab('tab-honor', this)">🌟 榮譽榜</button>
+            <button id="btn-tab-rules" onclick="switchTab('tab-rules', this)">📜 規則</button>
             <button id="btn-tab-search" onclick="switchTab('tab-search', this)">👁️ 歷史紀錄</button>
             <button id="btn-tab-admin" onclick="switchTab('tab-admin', this)">⚙️ 設置</button>
         </div>
 
         <div id="tab-main" class="section active">
             <div class="card">
-                <h2 style="border-left-color: #00f3ff;">目前排行</h2>
+                <h2>
+                    <span>目前排行</span>
+                    <div class="sort-controls">
+                        <button id="sortScoreBtnId" class="active" onclick="setScoreSort('id')">依編號</button>
+                        <button id="sortScoreBtnPts" onclick="setScoreSort('score')">依點數</button>
+                    </div>
+                </h2>
                 <table>
                     <thead>
-                        <tr><th>編號</th><th>名稱</th><th>總分</th></tr>
+                        <tr><th>編號</th><th>名稱</th><th>總分</th><th>自摸次數</th><th>放槍次數</th></tr>
                     </thead>
                     <tbody id="scoreboardBody"></tbody>
                 </table>
+            </div>
+
+            <div class="card" style="border-top-color: #2ecc71;">
+                <h2 style="border-left-color: #2ecc71; color: #2ecc71;">📈 即時戰況分析</h2>
+                <div class="chart-container">
+                    <canvas id="liveChartCanvas"></canvas>
+                </div>
             </div>
         </div>
 
         <div id="tab-action" class="section">
             <div class="card">
-                <h2 style="border-left-color: #ff007f;">加分 / 扣分</h2>
+                <h2 style="border-left-color: #ff007f;">戰力裁決 / 麻將事件</h2>
                 <div class="input-group">
                     <input type="number" id="targetId" placeholder="輸入目標編號" required>
                     <input type="number" id="targetPoints" placeholder="輸入分數變動 (正加, 負扣)" required>
                     <button class="action-btn" onclick="updatePoints()">執行指令</button>
                 </div>
+                
                 <div class="special-event-box">
-                    <input type="checkbox" id="isSpecialEvent">
-                    <label for="isSpecialEvent">🎖️ 觸發特殊牌型 (加入榮譽榜)</label>
-                    <input type="text" id="specialEventName" placeholder="輸入牌型描述" style="display:none; flex-grow: 1;">
+                    <div class="mahjong-options">
+                        <label style="color: #2ecc71;"><input type="checkbox" id="isZimoAction"> 🀄 此為「自摸」 (紀錄次數)</label>
+                        <label style="color: #e74c3c;"><input type="checkbox" id="isFangqiangAction"> 💥 此為「放槍」 (紀錄次數)</label>
+                    </div>
+                    <hr style="width: 100%; border: 0; border-top: 1px dashed rgba(255,215,0,0.3); margin: 5px 0;">
+                    <div class="mahjong-options">
+                        <label style="color: #ffd700;"><input type="checkbox" id="isSpecialEvent"> 🎖️ 觸發特殊牌型 (加入榮譽榜)</label>
+                    </div>
+                    <input type="text" id="specialEventName" placeholder="輸入牌型描述 (例：大四喜、國士無雙)" style="display:none;">
                 </div>
             </div>
         </div>
 
         <div id="tab-honor" class="section">
             <div class="card" style="border-top-color: #ffd700;">
-                <h2 style="border-left-color: #ffd700; color: #ffd700;">榮譽榜 (Hall of Fame)</h2>
+                <h2 style="border-left-color: #ffd700; color: #ffd700;">
+                    <span>榮譽榜 (Hall of Fame)</span>
+                    <div class="sort-controls">
+                        <button id="sortHonorBtnTime" class="active" onclick="setHonorSort('time')">最新發生</button>
+                        <button id="sortHonorBtnId" onclick="setHonorSort('id')">依編號</button>
+                    </div>
+                </h2>
                 <div id="honorList" class="honor-board"></div>
+            </div>
+        </div>
+
+        <div id="tab-rules" class="section">
+            <div class="card" style="border-top-color: #ffd700;">
+                <h2 style="border-left-color: #ffd700; color: #ffd700;">
+                    <span>📜 觀測站規則</span>
+                    <button class="action-btn btn-small" style="background: transparent; color: #ffd700; border: 1px solid #ffd700; box-shadow: none;" onclick="editRules()">編輯規則</button>
+                </h2>
+                
+                <div id="rulesDisplay" style="white-space: pre-wrap; line-height: 1.8; font-size: 1.1em; color: #ddd; margin-top: 15px; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 4px; border: 1px solid #333;">
+                    讀取中...
+                </div>
+
+                <div id="rulesEditArea" style="display: none; margin-top: 15px;">
+                    <textarea id="rulesInput" style="width: 100%; height: 350px; padding: 15px; background: rgba(0,0,0,0.6); border: 1px solid #ffd700; color: #ffd700; border-radius: 4px; font-size: 1.1em; box-sizing: border-box; resize: vertical;" placeholder="請輸入本局麻將規則（例如：底台、無限台、特殊規則...）"></textarea>
+                    <div style="text-align: right; margin-top: 15px;">
+                        <button class="action-btn" style="background: #333; color: #fff; box-shadow: none; margin-right: 10px;" onclick="cancelEditRules()">取消</button>
+                        <button class="action-btn" style="background: #ffd700; color: #000; box-shadow: 0 0 15px rgba(255,215,0,0.6);" onclick="saveRules()">儲存並發布規則</button>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -194,6 +254,7 @@
                     <button class="action-btn" onclick="searchScore()">查詢</button>
                 </div>
                 <div id="searchResult" style="color: #00f3ff; font-weight: bold; margin-top: 15px; font-size: 1.2em; text-shadow: 0 0 5px rgba(0,243,255,0.4);"></div>
+                <div id="searchStatsResult" style="margin-top: 10px; font-size: 1em; color: #ccc;"></div>
                 <div id="searchHistoryResult" style="margin-top: 15px; font-size: 0.95em; color: #aaa;"></div>
             </div>
         </div>
@@ -205,11 +266,11 @@
             </div>
 
             <div class="card" style="border-top-color: #b829d9;">
-                <h2 style="border-left-color: #b829d9; color: #b829d9;">覆寫個體名稱 <span style="font-size: 0.6em; color: #666;">(Admin Only)</span></h2>
+                <h2 style="border-left-color: #b829d9; color: #b829d9;">修改個體名稱</h2>
                 <div class="input-group">
-                    <input type="number" id="renameId" placeholder="輸入要覆寫的編號">
+                    <input type="number" id="renameId" placeholder="輸入要修改的編號">
                     <input type="text" id="renameName" placeholder="輸入新的名稱">
-                    <button class="action-btn btn-purple" onclick="renameUser()">覆寫 (需授權碼)</button>
+                    <button class="action-btn btn-purple" onclick="renameUser()">確認修改</button>
                 </div>
             </div>
 
@@ -224,7 +285,7 @@
             <div class="card" style="border-top-color: #ff003c;">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                     <h2 style="margin: 0; border-left-color: #ff003c;">📁 結算 <span style="font-size: 0.6em; color: #666;">(Admin Only)</span></h2>
-                    <button class="action-btn btn-danger" onclick="resetAll()">⚠️ 結算歸零 (需授權碼)</button>
+                    <button class="action-btn btn-danger" onclick="resetAll()">⚠️ 結算歸零並產生報表 (需授權碼)</button>
                 </div>
                 <div id="archivesList" style="margin-top: 15px;"></div>
             </div>
@@ -235,9 +296,9 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
     <script>
-        // ==========================================
-        // 點擊雷達波紋特效 (JS 控制)
-        // ==========================================
+        Chart.defaults.color = '#00f3ff';
+        Chart.defaults.borderColor = 'rgba(0, 243, 255, 0.1)';
+
         document.addEventListener('click', function(e) {
             const ripple = document.createElement('div');
             ripple.className = 'click-ripple';
@@ -247,16 +308,21 @@
             setTimeout(() => ripple.remove(), 500);
         });
 
-        // ==========================================
-        // 駭客動態背景矩陣特效 (Matrix Rain)
-        // ==========================================
+        document.addEventListener('mousemove', function(e) {
+            if(Math.random() > 0.5) return; 
+            const trail = document.createElement('div');
+            trail.className = 'mouse-trail';
+            trail.style.left = e.clientX + 'px';
+            trail.style.top = e.clientY + 'px';
+            document.body.appendChild(trail);
+            setTimeout(() => trail.remove(), 400); 
+        });
+
         const canvas = document.getElementById('matrixCanvas');
         const ctx = canvas.getContext('2d');
-        
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        
-        const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+        const letters = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789🀄東南西北中發白一二三四五六七八九筒索萬';
         const fontSize = 14;
         const columns = canvas.width / fontSize;
         const drops = Array.from({length: columns}).fill(1);
@@ -266,22 +332,15 @@
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = '#00f3ff';
             ctx.font = fontSize + 'px monospace';
-            
             for (let i = 0; i < drops.length; i++) {
                 const text = letters.charAt(Math.floor(Math.random() * letters.length));
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
                 drops[i]++;
             }
         }
         setInterval(drawMatrix, 50);
-        
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         // ==========================================
         // Firebase 與核心系統邏輯
@@ -299,10 +358,14 @@
 
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-
         const ADMIN_PASSWORD = "6767"; 
 
-        let users = {}; let logs = []; let archives = {}; let honors = [];   
+        let users = {}; let logs = []; let archives = {}; let honors = []; 
+        let rulesText = "目前尚無設定規則...\n點擊右上角「編輯規則」開始編寫。";  
+        
+        let currentScoreSort = 'id'; 
+        let currentHonorSort = 'time'; 
+        let liveChartInstance = null; 
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -315,13 +378,20 @@
             const data = snapshot.val();
             if (data) {
                 users = data.users || {}; logs = data.logs || []; archives = data.archives || {}; honors = data.honors || [];
+                rulesText = data.rulesText || "目前尚無設定規則...\n點擊右上角「編輯規則」開始編寫。";
             } else {
                 users = {}; logs = []; archives = {}; honors = [];
+                rulesText = "目前尚無設定規則...\n點擊右上角「編輯規則」開始編寫。";
             }
-            renderScoreboard(); renderHistory(); renderArchives(); renderHonors();
+            renderScoreboard(); 
+            renderLiveChart(); 
+            renderHistory(); 
+            renderArchives(); 
+            renderHonors();
+            renderRules(); 
         });
 
-        function updateDatabase() { db.ref('shabi_scoreboard').set({ users, logs, archives, honors }); }
+        function updateDatabase() { db.ref('shabi_scoreboard').set({ users, logs, archives, honors, rulesText }); }
 
         function verifyAdmin() {
             const pwd = prompt("🛑 系統存取限制，請輸入授權碼：");
@@ -334,35 +404,76 @@
             document.getElementById('specialEventName').style.display = this.checked ? 'block' : 'none';
         });
 
+        function renderRules() {
+            document.getElementById('rulesDisplay').innerText = rulesText;
+        }
+
+        // 🔓 取消了密碼驗證，任何人都能編輯
+        function editRules() {
+            document.getElementById('rulesDisplay').style.display = 'none';
+            document.getElementById('rulesEditArea').style.display = 'block';
+            document.getElementById('rulesInput').value = rulesText;
+        }
+
+        function cancelEditRules() {
+            document.getElementById('rulesDisplay').style.display = 'block';
+            document.getElementById('rulesEditArea').style.display = 'none';
+        }
+
+        function saveRules() {
+            const newRules = document.getElementById('rulesInput').value;
+            rulesText = newRules;
+            updateDatabase();
+            cancelEditRules();
+            alert("✅ 規則已成功更新發布！");
+        }
+
         function updatePoints() {
             const id = document.getElementById('targetId').value;
             const points = parseInt(document.getElementById('targetPoints').value);
+            const isZimo = document.getElementById('isZimoAction').checked;
+            const isFangqiang = document.getElementById('isFangqiangAction').checked;
             const isSpecial = document.getElementById('isSpecialEvent').checked;
             const specialName = document.getElementById('specialEventName').value.trim();
 
             if (!id || isNaN(points)) { alert("請輸入完整參數！"); return; }
-            if (isSpecial && !specialName) { alert("請輸入傳說事蹟名稱！"); return; }
+            if (isSpecial && !specialName) { alert("請輸入牌型描述！"); return; }
 
             if (!users[id]) {
                 const name = prompt(`偵測到未登錄編號 ${id}，請輸入其名稱：`);
                 if (!name) return;
-                users[id] = { name: name, score: 0 };
+                users[id] = { name: name, score: 0, zimo: 0, fangqiang: 0 };
             }
 
+            if(users[id].zimo === undefined) users[id].zimo = 0;
+            if(users[id].fangqiang === undefined) users[id].fangqiang = 0;
+
             users[id].score += points;
+            
+            let extraMsg = "";
+            if (isZimo) { users[id].zimo++; extraMsg += " [🀄自摸+1]"; }
+            if (isFangqiang) { users[id].fangqiang++; extraMsg += " [💥放槍+1]"; }
 
             const timeString = new Date().toLocaleString();
             const actionText = points >= 0 ? `獲得了 ${points} 點` : `被扣除了 ${Math.abs(points)} 點`;
             const logId = Date.now().toString(); 
 
-            logs.unshift({ id: logId, targetId: id, points: points, text: `[${timeString}] 編號 ${id} (${users[id].name}) ${actionText}。 (當下點數: ${users[id].score})`, isValid: true });
+            logs.unshift({ 
+                id: logId, targetId: id, points: points, 
+                text: `[${timeString}] 編號 ${id} (${users[id].name}) ${actionText}${extraMsg}。 (當下點數: ${users[id].score})`, 
+                isValid: true,
+                isZimo: isZimo,
+                isFangqiang: isFangqiang
+            });
 
             if (isSpecial) honors.unshift({ id: logId, userId: id, userName: users[id].name, eventName: specialName, time: timeString });
 
             document.getElementById('targetId').value = ''; document.getElementById('targetPoints').value = '';
+            document.getElementById('isZimoAction').checked = false; document.getElementById('isFangqiangAction').checked = false;
             document.getElementById('isSpecialEvent').checked = false; document.getElementById('specialEventName').style.display = 'none'; document.getElementById('specialEventName').value = '';
+            
             updateDatabase(); 
-            alert(`✅ 指令執行成功：編號 ${id} 點數已更新。`); 
+            alert(`✅ 指令執行成功：編號 ${id} 資料已更新。`); 
         }
 
         function undoAction(logId) {
@@ -370,42 +481,36 @@
             const logIndex = logs.findIndex(l => typeof l === 'object' && l.id === logId);
             if (logIndex > -1 && logs[logIndex].isValid) {
                 const log = logs[logIndex]; const uid = log.targetId;
-                if (confirm(`確定要將此紀錄撤銷嗎？\n(將收回編號 ${uid}  ${log.points} 點)`)) {
+                if (confirm(`確定要將此紀錄撤銷嗎？\n(包含分數與次數紀錄都將退回)`)) {
                     logs[logIndex].isValid = false;
-                    if (users[uid]) users[uid].score -= log.points;
+                    if (users[uid]) {
+                        users[uid].score -= log.points;
+                        if (log.isZimo) users[uid].zimo = Math.max(0, users[uid].zimo - 1);
+                        if (log.isFangqiang) users[uid].fangqiang = Math.max(0, users[uid].fangqiang - 1);
+                    }
                     honors = honors.filter(h => h.id !== logId);
                     updateDatabase();
                 }
             }
         }
 
-        // 🔥 新增的：覆寫名稱功能
+        // 🔓 取消了密碼驗證，任何人都能改名
         function renameUser() {
             const id = document.getElementById('renameId').value;
             const newName = document.getElementById('renameName').value.trim();
-
             if (!id || !newName) { alert("請完整輸入編號與新名稱！"); return; }
             if (!users[id]) { alert(`找不到編號 ${id} 的資料！`); return; }
-
-            if (verifyAdmin()) {
-                const oldName = users[id].name;
-                users[id].name = newName;
-                
-                // 為了同步榮譽榜上的名稱，順便更新一下
-                honors.forEach(h => { if(h.userId === id) h.userName = newName; });
-
-                const timeString = new Date().toLocaleString();
-                logs.unshift({ 
-                    id: Date.now().toString(), targetId: 'system', points: 0, 
-                    text: `[${timeString}] 🔄 系統裁決：編號 ${id} 的名稱已由 [${oldName}] 覆寫為 [${newName}]。`, 
-                    isValid: true 
-                });
-
-                document.getElementById('renameId').value = ''; 
-                document.getElementById('renameName').value = ''; 
-                updateDatabase(); 
-                alert(`✅ 覆寫成功：編號 ${id} 現在稱為 ${newName}。`);
-            }
+            
+            const oldName = users[id].name; 
+            users[id].name = newName;
+            honors.forEach(h => { if(h.userId === id) h.userName = newName; });
+            const timeString = new Date().toLocaleString();
+            logs.unshift({ id: Date.now().toString(), targetId: 'system', points: 0, text: `[${timeString}] 🔄 系統通知：編號 ${id} 的名稱已由 [${oldName}] 更改為 [${newName}]。`, isValid: true });
+            
+            document.getElementById('renameId').value = ''; 
+            document.getElementById('renameName').value = ''; 
+            updateDatabase(); 
+            alert(`✅ 改名成功：編號 ${id} 現在稱為 ${newName}。`);
         }
 
         function deleteUser() {
@@ -424,12 +529,16 @@
         function resetAll() {
             if (Object.keys(users).length === 0) return;
             if (verifyAdmin()) {
-                if (confirm("警告：確定要將所有點數歸零並封存目前數據嗎？")) {
+                if (confirm("警告：確定要將所有點數與統計歸零，並封存目前數據嗎？")) {
                     const timeString = new Date().toLocaleString(); const archiveId = Date.now().toString(); 
-                    archives[archiveId] = { name: `時間線封存 - ${timeString}`, users: JSON.parse(JSON.stringify(users)), logs: JSON.parse(JSON.stringify(logs)), honors: JSON.parse(JSON.stringify(honors)) };
-                    for (let id in users) users[id].score = 0;
+                    archives[archiveId] = { name: `對局結算紀錄 - ${timeString}`, users: JSON.parse(JSON.stringify(users)), logs: JSON.parse(JSON.stringify(logs)), honors: JSON.parse(JSON.stringify(honors)) };
+                    for (let id in users) {
+                        users[id].score = 0;
+                        users[id].zimo = 0;
+                        users[id].fangqiang = 0;
+                    }
                     logs = []; honors = []; 
-                    logs.unshift({ id: Date.now().toString(), targetId: 'system', points: 0, text: `[${timeString}] ⚠️ 系統裁決：已重置，先前的紀錄已存入紀錄庫。`, isValid: true });
+                    logs.unshift({ id: Date.now().toString(), targetId: 'system', points: 0, text: `[${timeString}] ⚠️ 系統裁決：麻將對局已結算，先前的紀錄已存入封存庫並產生圖表。`, isValid: true });
                     updateDatabase(); 
                 }
             }
@@ -437,26 +546,101 @@
 
         function searchScore() {
             const id = document.getElementById('searchId').value;
-            const resultDiv = document.getElementById('searchResult'); const historyDiv = document.getElementById('searchHistoryResult');
+            const resultDiv = document.getElementById('searchResult'); 
+            const statsDiv = document.getElementById('searchStatsResult'); 
+            const historyDiv = document.getElementById('searchHistoryResult');
+            
             if (!id) return;
             if (users[id]) {
+                const z = users[id].zimo || 0;
+                const f = users[id].fangqiang || 0;
                 resultDiv.innerText = `➤ 目標 ${id} (${users[id].name}) 檢測結果：目前點數 ${users[id].score}`;
+                statsDiv.innerHTML = `🀄 自摸次數: <span class="stat-zimo">${z}</span> 次 ｜ 💥 放槍次數: <span class="stat-fang">${f}</span> 次`;
+                
                 const userLogs = logs.filter(log => { if (typeof log === 'string') return log.includes(`編號 ${id}`) || log.includes(`編號 ${id}`); return log.targetId === id; }).map(log => { if (typeof log === 'string') return log; return log.isValid ? log.text : `<span class="invalid-log">${log.text} (已修正)</span>`; });
                 if (userLogs.length > 0) { historyDiv.innerHTML = `<strong>此目標近期紀錄：</strong><br><div style="max-height: 150px; overflow-y: auto; margin-top: 5px; border-left: 3px solid #00f3ff; padding-left: 10px;">` + userLogs.join('<br><br>') + `</div>`; } else { historyDiv.innerHTML = '目標目前尚無紀錄。'; }
-            } else { resultDiv.innerText = `➤ 失敗：查無編號 ${id}。`; historyDiv.innerHTML = ''; }
+            } else { resultDiv.innerText = `➤ 失敗：查無編號 ${id}。`; statsDiv.innerHTML = ''; historyDiv.innerHTML = ''; }
         }
 
         function deleteHonor(honorId) {
             if (verifyAdmin()) {
-                if(confirm("確定要把這個事蹟從殿堂中除名嗎？\n(注意：這只會移除榮譽顯示，不會影響實際點數)")) { honors = honors.filter(h => h.id !== honorId); updateDatabase(); }
+                if(confirm("確定要把這個事蹟從殿堂中除名嗎？")) { honors = honors.filter(h => h.id !== honorId); updateDatabase(); }
             }
+        }
+
+        function setScoreSort(type) {
+            currentScoreSort = type;
+            document.getElementById('sortScoreBtnId').classList.toggle('active', type === 'id');
+            document.getElementById('sortScoreBtnPts').classList.toggle('active', type === 'score');
+            renderScoreboard();
+        }
+
+        function setHonorSort(type) {
+            currentHonorSort = type;
+            document.getElementById('sortHonorBtnTime').classList.toggle('active', type === 'time');
+            document.getElementById('sortHonorBtnId').classList.toggle('active', type === 'id');
+            renderHonors();
         }
 
         function renderScoreboard() {
             const tbody = document.getElementById('scoreboardBody'); tbody.innerHTML = ''; 
-            const sortedIds = Object.keys(users).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            let sortedIds = Object.keys(users);
+            if (currentScoreSort === 'id') {
+                sortedIds.sort((a, b) => parseInt(a) - parseInt(b));
+            } else {
+                sortedIds.sort((a, b) => users[b].score - users[a].score);
+            }
+
             sortedIds.forEach(id => {
-                const tr = document.createElement('tr'); tr.innerHTML = `<td>${id}</td><td>${users[id].name}</td><td><strong>${users[id].score}</strong></td>`; tbody.appendChild(tr);
+                const z = users[id].zimo || 0;
+                const f = users[id].fangqiang || 0;
+                const tr = document.createElement('tr'); 
+                tr.innerHTML = `
+                    <td>${id}</td>
+                    <td>${users[id].name}</td>
+                    <td><strong>${users[id].score}</strong></td>
+                    <td class="stat-zimo">${z}</td>
+                    <td class="stat-fang">${f}</td>
+                `; 
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderLiveChart() {
+            const canvasElement = document.getElementById('liveChartCanvas');
+            if (!canvasElement) return;
+            const ctxLive = canvasElement.getContext('2d');
+            const sortedIds = Object.keys(users).sort((a, b) => parseInt(a) - parseInt(b));
+            const chartLabels = [];
+            const chartZimoData = [];
+            const chartFangData = [];
+
+            sortedIds.forEach(id => {
+                chartLabels.push(`${id}.${users[id].name}`);
+                chartZimoData.push(users[id].zimo || 0);
+                chartFangData.push(users[id].fangqiang || 0);
+            });
+
+            if (liveChartInstance) { liveChartInstance.destroy(); }
+
+            liveChartInstance = new Chart(ctxLive, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        { label: '自摸次數', data: chartZimoData, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: '#2ecc71', borderWidth: 1 },
+                        { label: '放槍次數', data: chartFangData, backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: '#e74c3c', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { ticks: { color: '#00f3ff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    },
+                    plugins: { legend: { labels: { color: '#fff' } } }
+                }
             });
         }
 
@@ -475,8 +659,14 @@
 
         function renderHonors() {
             const honorList = document.getElementById('honorList'); honorList.innerHTML = '';
-            if (honors.length > 0) {
-                honors.forEach(h => {
+            
+            let displayHonors = [...honors];
+            if (currentHonorSort === 'id') {
+                displayHonors.sort((a, b) => parseInt(a.userId) - parseInt(b.userId));
+            } 
+
+            if (displayHonors.length > 0) {
+                displayHonors.forEach(h => {
                     const div = document.createElement('div'); div.className = 'honor-item';
                     div.innerHTML = `<div style="display: flex; flex-direction: column;"><span class="honor-text">🎖️ ${h.eventName}</span><span class="honor-user">達成者：編號 ${h.userId} (${h.userName}) / 時間：${h.time.split(' ')[0]}</span></div><button class="action-btn btn-danger btn-small" onclick="deleteHonor('${h.id}')">除名 (授權)</button>`;
                     honorList.appendChild(div);
@@ -492,11 +682,23 @@
             }
             
             const archive = archives[archiveId];
-            
-            let sbHtml = '<table><thead><tr><th>編號</th><th>名稱</th><th>最終總分</th></tr></thead><tbody>';
             const sortedIds = Object.keys(archive.users || {}).sort((a, b) => parseInt(a) - parseInt(b));
+            
+            const chartLabels = [];
+            const chartZimoData = [];
+            const chartFangData = [];
+
+            let sbHtml = '<table><thead><tr><th>編號</th><th>名稱</th><th>最終總分</th><th>自摸次數</th><th>放槍次數</th></tr></thead><tbody>';
             sortedIds.forEach(id => {
-                sbHtml += `<tr><td>${id}</td><td>${archive.users[id].name}</td><td><strong>${archive.users[id].score}</strong></td></tr>`;
+                const user = archive.users[id];
+                const z = user.zimo || 0;
+                const f = user.fangqiang || 0;
+                
+                chartLabels.push(`${id}.${user.name}`);
+                chartZimoData.push(z);
+                chartFangData.push(f);
+
+                sbHtml += `<tr><td>${id}</td><td>${user.name}</td><td><strong>${user.score}</strong></td><td class="stat-zimo">${z}</td><td class="stat-fang">${f}</td></tr>`;
             });
             sbHtml += '</tbody></table>';
 
@@ -507,8 +709,36 @@
             });
             logsHtml += '</div>';
 
-            contentDiv.innerHTML = `<h4>📊 結算排行榜</h4>${sbHtml}<h4 style="margin-top: 20px;">📜 結算前歷史紀錄</h4>${logsHtml}`;
+            const chartCanvasId = `chartCanvas-${archiveId}`;
+            const chartHtml = `
+                <h4 style="margin-top: 20px;">📈 結算圖表</h4>
+                <div class="chart-container">
+                    <canvas id="${chartCanvasId}"></canvas>
+                </div>
+            `;
+
+            contentDiv.innerHTML = `<h4>📊 結算排行榜</h4>${sbHtml}${chartHtml}<h4 style="margin-top: 20px;">📜 結算前歷史紀錄</h4>${logsHtml}`;
             contentDiv.style.display = 'block';
+
+            const ctxChart = document.getElementById(chartCanvasId).getContext('2d');
+            new Chart(ctxChart, {
+                type: 'bar',
+                data: {
+                    labels: chartLabels,
+                    datasets: [
+                        { label: '自摸次數', data: chartZimoData, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: '#2ecc71', borderWidth: 1 },
+                        { label: '放槍次數', data: chartFangData, backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: '#e74c3c', borderWidth: 1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: { 
+                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { ticks: { color: '#00f3ff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    },
+                    plugins: { legend: { labels: { color: '#fff' } } }
+                }
+            });
         }
 
         function renderArchives() {
@@ -521,7 +751,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
                         <strong style="color: #aaa;">${archives[archiveId].name}</strong>
                         <div>
-                            <button class="action-btn btn-small" style="background: transparent; color: #00f3ff; border: 1px solid #00f3ff; box-shadow: none;" onclick="toggleArchive('${archiveId}')">查看明細</button>
+                            <button class="action-btn btn-small" style="background: transparent; color: #00f3ff; border: 1px solid #00f3ff; box-shadow: none;" onclick="toggleArchive('${archiveId}')">查看圖表與明細</button>
                         </div>
                     </div>
                     <div id="archive-content-${archiveId}" class="archive-content"></div>
