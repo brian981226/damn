@@ -50,7 +50,7 @@
             20%, 24%, 55% { text-shadow: none; opacity: 0.4; }
         }
 
-        h2 { color: #e0e0e0; font-weight: 700; letter-spacing: 1px; border-left: 4px solid #00f3ff; padding-left: 10px; margin-top: 0; text-shadow: 0 0 5px rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: space-between;}
+        h2 { color: #e0e0e0; font-weight: 700; letter-spacing: 1px; border-left: 4px solid #00f3ff; padding-left: 10px; margin-top: 0; text-shadow: 0 0 5px rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;}
         
         .nav-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 25px; background: rgba(10,10,15,0.85); padding: 8px; border-radius: 6px; border: 1px solid #1f1f2e; box-shadow: 0 4px 15px rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
         .nav-bar button { flex: 1; padding: 12px; font-size: 1em; font-weight: bold; background: transparent; color: #666; border: 1px solid transparent; border-radius: 4px; cursor: pointer; transition: 0.3s; white-space: nowrap; position: relative; }
@@ -71,13 +71,14 @@
         .card::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 2px; background: linear-gradient(90deg, transparent, #fff, transparent); animation: scanline 3s linear infinite; }
         @keyframes scanline { 0% { left: -100%; } 100% { left: 200%; } }
 
-        .input-group { margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+        .input-group { margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
         input[type="number"], input[type="text"], textarea { padding: 12px; background: rgba(0,0,0,0.6); border: 1px solid #333; color: #00f3ff; border-radius: 4px; flex-grow: 1; min-width: 120px; font-size: 1em; font-weight: bold; transition: 0.3s; cursor: text; }
         input:focus, textarea:focus { border-color: #00f3ff; box-shadow: 0 0 10px rgba(0,243,255,0.3); outline: none; }
-        input::placeholder, textarea::placeholder { color: #555; font-weight: normal; }
+        input::placeholder, textarea::placeholder { color: #555; font-weight: normal; text-align: center; }
 
         button.action-btn { padding: 12px 25px; font-size: 1em; font-weight: bold; border: none; border-radius: 4px; cursor: pointer; background-color: #00f3ff; color: #000; box-shadow: 0 0 10px rgba(0,243,255,0.4); transition: 0.2s; white-space: nowrap; text-transform: uppercase; }
         button.action-btn:hover { background-color: #fff; box-shadow: 0 0 20px rgba(0,243,255,0.8); animation: btnGlitch 0.2s infinite; }
+        button.action-btn:disabled { background-color: #444 !important; color: #888 !important; box-shadow: none !important; cursor: not-allowed; animation: none !important; }
         @keyframes btnGlitch { 0% { transform: translate(0) } 20% { transform: translate(-1px, 1px) } 40% { transform: translate(-1px, -1px) } 60% { transform: translate(1px, 1px) } 80% { transform: translate(1px, -1px) } 100% { transform: translate(0) } }
         
         .btn-danger { background-color: transparent !important; color: #ff003c !important; border: 1px solid #ff003c !important; box-shadow: inset 0 0 5px rgba(255,0,60,0.2) !important; }
@@ -88,12 +89,13 @@
 
         .btn-small { padding: 5px 10px; font-size: 0.85em; margin-left: 8px; font-weight: bold; }
         
-        .sort-controls { display: flex; gap: 5px; font-size: 0.8em; }
-        .sort-controls button { background: transparent; color: #666; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+        .sort-controls { display: flex; gap: 5px; font-size: 0.8em; flex-wrap: wrap; }
+        .sort-controls button { background: transparent; color: #666; border: 1px solid #444; padding: 4px 8px; border-radius: 4px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
         .sort-controls button.active { color: #00f3ff; border-color: #00f3ff; box-shadow: inset 0 0 5px rgba(0,243,255,0.3); }
 
         table { width: 100%; border-collapse: collapse; margin-top: 15px; cursor: default; }
-        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #1f1f2e; }
+        .table-wrapper { overflow-x: auto; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #1f1f2e; white-space: nowrap;}
         th { background: rgba(0, 243, 255, 0.05); color: #00f3ff; font-weight: 900; letter-spacing: 1px; border-bottom: 2px solid #00f3ff; }
         td strong { color: #00f3ff; font-size: 1.1em; text-shadow: 0 0 5px rgba(0,243,255,0.3); }
         .stat-zimo { color: #2ecc71; font-weight: bold; }
@@ -108,7 +110,7 @@
         .invalid-log { text-decoration: line-through; color: #ff003c; opacity: 0.6; }
         
         .honor-board { padding: 0; margin-top: 15px; }
-        .honor-item { background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%); border-left: 4px solid #ffd700; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 4px 4px 0; transition: 0.3s; }
+        .honor-item { background: linear-gradient(90deg, rgba(255,215,0,0.1) 0%, transparent 100%); border-left: 4px solid #ffd700; padding: 18px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 0 4px 4px 0; transition: 0.3s; flex-wrap: wrap; gap: 10px;}
         .honor-item:hover { background: linear-gradient(90deg, rgba(255,215,0,0.2) 0%, transparent 100%); transform: translateX(10px); box-shadow: -5px 0 15px rgba(255,215,0,0.2); }
         .honor-text { font-size: 1.2em; color: #ffd700; font-weight: 900; text-shadow: 0 0 8px rgba(255,215,0,0.5); }
         .honor-user { color: #fff; font-size: 0.9em; font-weight: normal; margin-left: 10px; text-shadow: none; }
@@ -117,11 +119,10 @@
         .mahjong-options { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
         .mahjong-options label { font-weight: bold; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; }
         .mahjong-options input[type="checkbox"] { width: 18px; height: 18px; accent-color: #00f3ff; cursor: pointer;}
-        .special-event-box input[type="text"] { border-color: #ffd700; color: #ffd700; width: 100%; box-sizing: border-box;}
+        .special-event-box input[type="text"], .special-event-box input[type="number"] { border-color: #ffd700; color: #ffd700; box-sizing: border-box; text-align: left;}
 
         .archive-content { display: none; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #444; animation: cyberpunkFadeIn 0.3s ease-out; }
         .archive-content h4 { color: #00f3ff; margin-top: 0; margin-bottom: 10px; font-size: 1.1em; text-shadow: 0 0 5px rgba(0,243,255,0.4); }
-        .chart-container { width: 100%; max-width: 700px; margin: 20px auto; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; border: 1px solid #2a2a3c; }
         
         .click-ripple {
             position: fixed; border-radius: 50%; border: 2px solid #00f3ff;
@@ -136,6 +137,17 @@
             animation: trailAnim 0.4s linear forwards; box-shadow: 0 0 8px #00f3ff;
         }
         @keyframes trailAnim { 0% { opacity: 0.8; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.2); } }
+
+        /* 🔥 運勢占卜專用樣式 */
+        .fortune-container { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        .fortune-result-card { 
+            background: rgba(0, 0, 0, 0.6); border: 2px solid #333; border-radius: 12px; 
+            padding: 30px; margin-top: 20px; max-width: 500px; width: 100%; box-sizing: border-box;
+            display: none; transition: all 0.5s ease; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .fortune-icon { font-size: 5rem; margin-bottom: 10px; filter: drop-shadow(0 0 20px rgba(255,255,255,0.2)); }
+        .fortune-title { font-size: 2em; font-weight: 900; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
+        .fortune-desc { font-size: 1.1em; line-height: 1.6; color: #ddd; text-align: left; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 8px; border-left: 4px solid #fff; }
 
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -157,7 +169,8 @@
 
         <div class="nav-bar">
             <button id="btn-tab-main" class="active" onclick="switchTab('tab-main', this)">📊 點數排行</button>
-            <button id="btn-tab-action" onclick="switchTab('tab-action', this)">🀄 加減分設置</button>
+            <button id="btn-tab-action" onclick="switchTab('tab-action', this)">🀄 加減分</button>
+            <button id="btn-tab-fortune" onclick="switchTab('tab-fortune', this)">🔮 運勢觀測</button>
             <button id="btn-tab-honor" onclick="switchTab('tab-honor', this)">🌟 榮譽榜</button>
             <button id="btn-tab-rules" onclick="switchTab('tab-rules', this)">📜 規則</button>
             <button id="btn-tab-search" onclick="switchTab('tab-search', this)">👁️ 歷史紀錄</button>
@@ -171,20 +184,38 @@
                     <div class="sort-controls">
                         <button id="sortScoreBtnId" class="active" onclick="setScoreSort('id')">依編號</button>
                         <button id="sortScoreBtnPts" onclick="setScoreSort('score')">依點數</button>
+                        <button id="sortScoreBtnZimo" onclick="setScoreSort('zimo')">依自摸</button>
+                        <button id="sortScoreBtnFang" onclick="setScoreSort('fangqiang')">依放槍</button>
                     </div>
                 </h2>
-                <table>
-                    <thead>
-                        <tr><th>編號</th><th>名稱</th><th>總分</th><th>自摸次數</th><th>放槍次數</th></tr>
-                    </thead>
-                    <tbody id="scoreboardBody"></tbody>
-                </table>
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr><th>編號</th><th>名稱</th><th>總分</th><th>自摸次數</th><th>放槍次數</th></tr>
+                        </thead>
+                        <tbody id="scoreboardBody"></tbody>
+                    </table>
+                </div>
             </div>
+        </div>
 
-            <div class="card" style="border-top-color: #2ecc71;">
-                <h2 style="border-left-color: #2ecc71; color: #2ecc71;">📈 即時戰況分析</h2>
-                <div class="chart-container">
-                    <canvas id="liveChartCanvas"></canvas>
+        <div id="tab-fortune" class="section">
+            <div class="card" style="border-top-color: #b829d9;">
+                <h2 style="border-left-color: #b829d9; color: #b829d9;">🔮 今日賭運演算核心</h2>
+                <div class="fortune-container">
+                    <p style="color: #aaa; margin-bottom: 20px;">請輸入您的編號，透過量子演算抽取專屬牌局運勢。<br><span style="color:#ff007f; font-weight:bold;">⚠️ 注意：每人每 12 小時僅能更新一次運勢，抽完即鎖死！</span></p>
+                    
+                    <div class="input-group">
+                        <input type="number" id="fortuneTargetId" placeholder="輸入您的編號">
+                        <button id="btnDrawFortune" class="action-btn btn-purple" onclick="drawFortune()">啟動命運輪盤</button>
+                    </div>
+                    
+                    <div id="fortuneResult" class="fortune-result-card">
+                        <div id="fortuneIcon" class="fortune-icon">❓</div>
+                        <div id="fortuneTitle" class="fortune-title">演算中...</div>
+                        <div id="fortuneDesc" class="fortune-desc">正在連結阿卡西紀錄獲取您的今日運勢...</div>
+                        <div id="fortuneTimeLeft" style="margin-top: 15px; font-size: 0.9em; color: #888; font-weight: bold; display: none;"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -207,7 +238,10 @@
                     <div class="mahjong-options">
                         <label style="color: #ffd700;"><input type="checkbox" id="isSpecialEvent"> 🎖️ 觸發特殊牌型 (加入榮譽榜)</label>
                     </div>
-                    <input type="text" id="specialEventName" placeholder="輸入牌型描述 (例：大四喜、國士無雙)" style="display:none;">
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <input type="text" id="specialEventName" placeholder="輸入牌型描述 (例：大四喜)" style="display:none; flex-grow: 1; text-align: left;">
+                        <input type="number" id="specialEventTai" placeholder="台數" style="display:none; width: 100px;">
+                    </div>
                 </div>
             </div>
         </div>
@@ -218,6 +252,7 @@
                     <span>榮譽榜 (Hall of Fame)</span>
                     <div class="sort-controls">
                         <button id="sortHonorBtnTime" class="active" onclick="setHonorSort('time')">最新發生</button>
+                        <button id="sortHonorBtnTai" onclick="setHonorSort('tai')">依台數</button>
                         <button id="sortHonorBtnId" onclick="setHonorSort('id')">依編號</button>
                     </div>
                 </h2>
@@ -296,9 +331,6 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database-compat.js"></script>
 
     <script>
-        Chart.defaults.color = '#00f3ff';
-        Chart.defaults.borderColor = 'rgba(0, 243, 255, 0.1)';
-
         document.addEventListener('click', function(e) {
             const ripple = document.createElement('div');
             ripple.className = 'click-ripple';
@@ -343,6 +375,101 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
         // ==========================================
+        // 🔮 運勢抽籤邏輯 (Fortune Teller)
+        // ==========================================
+        const fortunes = [
+            { title: "大吉 · 雀神降臨", icon: "🐉", color: "#ffd700", desc: "牌桌上的絕對主宰！進牌如喝水，隨便打隨便胡，連上個廁所回來都能摸到絕張。今天你就是賭神，建議對手直接雙手離開桌面投降。" },
+            { title: "中吉 · 財星高照", icon: "💸", color: "#2ecc71", desc: "進牌順暢，防守如鐵壁。雖然不會把把自摸，但別人放槍你一定有份。見好就收，今天贏的錢絕對夠你吃頓頂級和牛。" },
+            { title: "小吉 · 苟且偷生", icon: "🐢", color: "#00f3ff", desc: "不求連莊自摸，只求安全下莊。今天你的戰術只有一個字：「苟」。跟著大老闆打熟張，不求贏錢，少輸當贏！" },
+            { title: "凶 · 散財童子", icon: "💸", color: "#ff9800", desc: "打東來東，打西來西，別人聽什麼你就精準打什麼。今天建議你主動負責切水果、倒茶跟點外賣，少碰牌為妙。" },
+            { title: "大凶 · 冥土追魂", icon: "💀", color: "#e74c3c", desc: "把把單吊還被攔胡。你今天的存在就是為了促進台灣經濟流通，建議直接把錢包放在桌上，省得一直掏錢出來。" },
+            { title: "極厄 · 慈善大師", icon: "🤡", color: "#b829d9", desc: "做大牌做半天，別人屁胡把你無情截掉。你今天不是來打牌的，你是來做慈善發紅包的。快去安撫一下受傷的心靈吧。" }
+        ];
+
+        function drawFortune() {
+            const id = document.getElementById('fortuneTargetId').value;
+            if (!id) { alert("請輸入您的編號！"); return; }
+            if (!users[id]) { 
+                const name = prompt(`系統偵測到未登錄編號 ${id}，請先為自己取個名稱：`);
+                if (!name) return;
+                users[id] = { name: name, score: 0, zimo: 0, fangqiang: 0 };
+                updateDatabase();
+            }
+
+            const resultCard = document.getElementById('fortuneResult');
+            const icon = document.getElementById('fortuneIcon');
+            const title = document.getElementById('fortuneTitle');
+            const desc = document.getElementById('fortuneDesc');
+            const timeLeftDiv = document.getElementById('fortuneTimeLeft');
+            const btn = document.getElementById('btnDrawFortune');
+
+            const now = Date.now();
+            const twelveHours = 12 * 60 * 60 * 1000;
+            
+            // 檢查是否還在 12 小時冷卻期內
+            if (users[id].fortune && (now - users[id].fortune.timestamp < twelveHours)) {
+                const f = users[id].fortune;
+                const remainingHours = Math.ceil((twelveHours - (now - f.timestamp)) / (60 * 60 * 1000));
+                
+                resultCard.style.display = 'block';
+                icon.innerText = f.icon;
+                title.innerText = f.title;
+                title.style.color = f.color;
+                title.style.textShadow = `0 0 15px ${f.color}`;
+                desc.innerText = f.desc;
+                desc.style.borderColor = f.color;
+                resultCard.style.borderColor = f.color;
+                resultCard.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px ${f.color}40`;
+                
+                timeLeftDiv.style.display = 'block';
+                timeLeftDiv.innerText = `⏳ 命運已鎖定：編號 ${id} 的運勢將在約 ${remainingHours} 小時後才能重置。`;
+                return;
+            }
+
+            // 抽新運勢
+            btn.disabled = true;
+            resultCard.style.display = 'block';
+            resultCard.style.borderColor = '#333';
+            resultCard.style.boxShadow = '0 10px 30px rgba(0,0,0,0.8)';
+            timeLeftDiv.style.display = 'none';
+            
+            let count = 0;
+            const shuffleInterval = setInterval(() => {
+                const randomF = fortunes[Math.floor(Math.random() * fortunes.length)];
+                icon.innerText = randomF.icon;
+                title.innerText = "量子演算中...";
+                title.style.color = "#888";
+                title.style.textShadow = "none";
+                desc.innerText = `正在為編號 ${id} 攔截運勢封包...`;
+                desc.style.borderColor = "#888";
+                count++;
+
+                if (count > 20) {
+                    clearInterval(shuffleInterval);
+                    const finalF = fortunes[Math.floor(Math.random() * fortunes.length)];
+                    icon.innerText = finalF.icon;
+                    title.innerText = finalF.title;
+                    title.style.color = finalF.color;
+                    title.style.textShadow = `0 0 15px ${finalF.color}`;
+                    desc.innerText = finalF.desc;
+                    desc.style.borderColor = finalF.color;
+                    resultCard.style.borderColor = finalF.color;
+                    resultCard.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), inset 0 0 20px ${finalF.color}40`;
+                    
+                    // 儲存到 Firebase
+                    users[id].fortune = {
+                        icon: finalF.icon, title: finalF.title, color: finalF.color, desc: finalF.desc, timestamp: now
+                    };
+                    updateDatabase();
+
+                    timeLeftDiv.style.display = 'block';
+                    timeLeftDiv.innerText = `✅ 編號 ${id} 的運勢已寫入阿卡西紀錄，12 小時內無法更改。`;
+                    btn.disabled = false;
+                }
+            }, 50);
+        }
+
+        // ==========================================
         // Firebase 與核心系統邏輯
         // ==========================================
         const firebaseConfig = {
@@ -365,7 +492,6 @@
         
         let currentScoreSort = 'id'; 
         let currentHonorSort = 'time'; 
-        let liveChartInstance = null; 
 
         function switchTab(tabId, btnElement) {
             document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
@@ -384,7 +510,6 @@
                 rulesText = "目前尚無設定規則...\n點擊右上角「編輯規則」開始編寫。";
             }
             renderScoreboard(); 
-            renderLiveChart(); 
             renderHistory(); 
             renderArchives(); 
             renderHonors();
@@ -401,14 +526,15 @@
         }
 
         document.getElementById('isSpecialEvent').addEventListener('change', function() {
-            document.getElementById('specialEventName').style.display = this.checked ? 'block' : 'none';
+            const isChecked = this.checked;
+            document.getElementById('specialEventName').style.display = isChecked ? 'block' : 'none';
+            document.getElementById('specialEventTai').style.display = isChecked ? 'block' : 'none';
         });
 
         function renderRules() {
             document.getElementById('rulesDisplay').innerText = rulesText;
         }
 
-        // 🔓 取消了密碼驗證，任何人都能編輯
         function editRules() {
             document.getElementById('rulesDisplay').style.display = 'none';
             document.getElementById('rulesEditArea').style.display = 'block';
@@ -435,6 +561,7 @@
             const isFangqiang = document.getElementById('isFangqiangAction').checked;
             const isSpecial = document.getElementById('isSpecialEvent').checked;
             const specialName = document.getElementById('specialEventName').value.trim();
+            const specialTai = parseInt(document.getElementById('specialEventTai').value) || 0;
 
             if (!id || isNaN(points)) { alert("請輸入完整參數！"); return; }
             if (isSpecial && !specialName) { alert("請輸入牌型描述！"); return; }
@@ -466,11 +593,12 @@
                 isFangqiang: isFangqiang
             });
 
-            if (isSpecial) honors.unshift({ id: logId, userId: id, userName: users[id].name, eventName: specialName, time: timeString });
+            if (isSpecial) honors.unshift({ id: logId, userId: id, userName: users[id].name, eventName: specialName, tai: specialTai, time: timeString });
 
             document.getElementById('targetId').value = ''; document.getElementById('targetPoints').value = '';
             document.getElementById('isZimoAction').checked = false; document.getElementById('isFangqiangAction').checked = false;
             document.getElementById('isSpecialEvent').checked = false; document.getElementById('specialEventName').style.display = 'none'; document.getElementById('specialEventName').value = '';
+            document.getElementById('specialEventTai').style.display = 'none'; document.getElementById('specialEventTai').value = '';
             
             updateDatabase(); 
             alert(`✅ 指令執行成功：編號 ${id} 資料已更新。`); 
@@ -494,7 +622,6 @@
             }
         }
 
-        // 🔓 取消了密碼驗證，任何人都能改名
         function renameUser() {
             const id = document.getElementById('renameId').value;
             const newName = document.getElementById('renameName').value.trim();
@@ -572,6 +699,8 @@
             currentScoreSort = type;
             document.getElementById('sortScoreBtnId').classList.toggle('active', type === 'id');
             document.getElementById('sortScoreBtnPts').classList.toggle('active', type === 'score');
+            document.getElementById('sortScoreBtnZimo').classList.toggle('active', type === 'zimo');
+            document.getElementById('sortScoreBtnFang').classList.toggle('active', type === 'fangqiang');
             renderScoreboard();
         }
 
@@ -579,6 +708,7 @@
             currentHonorSort = type;
             document.getElementById('sortHonorBtnTime').classList.toggle('active', type === 'time');
             document.getElementById('sortHonorBtnId').classList.toggle('active', type === 'id');
+            document.getElementById('sortHonorBtnTai').classList.toggle('active', type === 'tai');
             renderHonors();
         }
 
@@ -588,8 +718,12 @@
             let sortedIds = Object.keys(users);
             if (currentScoreSort === 'id') {
                 sortedIds.sort((a, b) => parseInt(a) - parseInt(b));
-            } else {
+            } else if (currentScoreSort === 'score') {
                 sortedIds.sort((a, b) => users[b].score - users[a].score);
+            } else if (currentScoreSort === 'zimo') {
+                sortedIds.sort((a, b) => (users[b].zimo || 0) - (users[a].zimo || 0));
+            } else if (currentScoreSort === 'fangqiang') {
+                sortedIds.sort((a, b) => (users[b].fangqiang || 0) - (users[a].fangqiang || 0));
             }
 
             sortedIds.forEach(id => {
@@ -604,43 +738,6 @@
                     <td class="stat-fang">${f}</td>
                 `; 
                 tbody.appendChild(tr);
-            });
-        }
-
-        function renderLiveChart() {
-            const canvasElement = document.getElementById('liveChartCanvas');
-            if (!canvasElement) return;
-            const ctxLive = canvasElement.getContext('2d');
-            const sortedIds = Object.keys(users).sort((a, b) => parseInt(a) - parseInt(b));
-            const chartLabels = [];
-            const chartZimoData = [];
-            const chartFangData = [];
-
-            sortedIds.forEach(id => {
-                chartLabels.push(`${id}.${users[id].name}`);
-                chartZimoData.push(users[id].zimo || 0);
-                chartFangData.push(users[id].fangqiang || 0);
-            });
-
-            if (liveChartInstance) { liveChartInstance.destroy(); }
-
-            liveChartInstance = new Chart(ctxLive, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [
-                        { label: '自摸次數', data: chartZimoData, backgroundColor: 'rgba(46, 204, 113, 0.7)', borderColor: '#2ecc71', borderWidth: 1 },
-                        { label: '放槍次數', data: chartFangData, backgroundColor: 'rgba(231, 76, 60, 0.7)', borderColor: '#e74c3c', borderWidth: 1 }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    scales: { 
-                        y: { beginAtZero: true, ticks: { stepSize: 1, color: '#aaa' }, grid: { color: 'rgba(255,255,255,0.1)' } },
-                        x: { ticks: { color: '#00f3ff' }, grid: { color: 'rgba(255,255,255,0.1)' } }
-                    },
-                    plugins: { legend: { labels: { color: '#fff' } } }
-                }
             });
         }
 
@@ -663,12 +760,21 @@
             let displayHonors = [...honors];
             if (currentHonorSort === 'id') {
                 displayHonors.sort((a, b) => parseInt(a.userId) - parseInt(b.userId));
-            } 
+            } else if (currentHonorSort === 'tai') {
+                displayHonors.sort((a, b) => (b.tai || 0) - (a.tai || 0)); 
+            }
 
             if (displayHonors.length > 0) {
                 displayHonors.forEach(h => {
                     const div = document.createElement('div'); div.className = 'honor-item';
-                    div.innerHTML = `<div style="display: flex; flex-direction: column;"><span class="honor-text">🎖️ ${h.eventName}</span><span class="honor-user">達成者：編號 ${h.userId} (${h.userName}) / 時間：${h.time.split(' ')[0]}</span></div><button class="action-btn btn-danger btn-small" onclick="deleteHonor('${h.id}')">除名 (授權)</button>`;
+                    const taiDisplay = h.tai ? `<span style="color: #00f3ff; margin-left: 5px;">[${h.tai} 台]</span>` : '';
+                    div.innerHTML = `
+                        <div style="display: flex; flex-direction: column;">
+                            <span class="honor-text">🎖️ ${h.eventName} ${taiDisplay}</span>
+                            <span class="honor-user">達成者：編號 ${h.userId} (${h.userName}) / 時間：${h.time.split(' ')[0]}</span>
+                        </div>
+                        <button class="action-btn btn-danger btn-small" onclick="deleteHonor('${h.id}')">除名 (授權)</button>
+                    `;
                     honorList.appendChild(div);
                 });
             } else { honorList.innerHTML = '<p style="color: #666; font-style: italic;">目前殿堂尚無傳說降臨...</p>'; }
@@ -688,7 +794,7 @@
             const chartZimoData = [];
             const chartFangData = [];
 
-            let sbHtml = '<table><thead><tr><th>編號</th><th>名稱</th><th>最終總分</th><th>自摸次數</th><th>放槍次數</th></tr></thead><tbody>';
+            let sbHtml = '<div class="table-wrapper"><table><thead><tr><th>編號</th><th>名稱</th><th>最終總分</th><th>自摸次數</th><th>放槍次數</th></tr></thead><tbody>';
             sortedIds.forEach(id => {
                 const user = archive.users[id];
                 const z = user.zimo || 0;
@@ -700,7 +806,7 @@
 
                 sbHtml += `<tr><td>${id}</td><td>${user.name}</td><td><strong>${user.score}</strong></td><td class="stat-zimo">${z}</td><td class="stat-fang">${f}</td></tr>`;
             });
-            sbHtml += '</tbody></table>';
+            sbHtml += '</tbody></table></div>';
 
             let logsHtml = '<div class="history-box" style="margin-top: 15px;">';
             (archive.logs || []).forEach(log => {
